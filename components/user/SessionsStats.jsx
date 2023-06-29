@@ -28,12 +28,12 @@ const MultiValue = props => {
 };
 
 const SessionStats = ({ data, sheet }) => {
-  const formatData = (_, idx) => ({label: `Session #${data.session.length - idx}`, value: idx})
+  const formatData = (_, idx) => ({ label: `Session #${data.session.length - idx}`, value: idx })
   const [multi, setMulti] = useState(data ? data.session.filter((_, idx) => idx < 5).map(formatData) : [])
   const [sessData, setSessData] = useState(null)
-  
+
   useEffect(() => {
-    axios.post(`/api/sheet/${sheet}`, {keepSessions: multi.map(m => m.value)})
+    axios.post(`/api/sheet/${sheet}`, { keepSessions: multi.map(m => m.value) })
       .then(res => setSessData(res.data.overall))
   }, [])
 
@@ -57,20 +57,20 @@ const SessionStats = ({ data, sheet }) => {
             hideSelectedOptions={false}
             backspaceRemovesValue={false}
             styles={{
-              option: styles => ({...styles, color: "black", textAlign: "left"})
+              option: styles => ({ ...styles, color: "black", textAlign: "left" })
             }}
           />
         </Col>
         <Col md={1} className="align-self-center">
           <Button variant="success" onClick={() => {
-            axios.post(`/api/sheet/${sheet}`, {keepSessions: multi.map(m => m.value)})
+            axios.post(`/api/sheet/${sheet}`, { keepSessions: multi.map(m => m.value) })
               .then(res => setSessData(res.data.overall))
           }}>
             Update
           </Button>
         </Col>
       </Row>
-      { sessData && <Stats data={sessData} isSess /> }
+      {sessData && <Stats data={sessData} isSess />}
     </>
   )
 }

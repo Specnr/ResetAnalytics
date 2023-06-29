@@ -8,4 +8,4 @@ export const tooltipTexts = {
   convG: "The rate of converting any run into this split",
 }
 
-export const colourList = ["#0088FE","#00C49F","#973e95","#FF8042"]
+export const colourList = ["#0088FE","#00C49F","#973e95","#FF8042","#FFC0CB","#FFD700"]

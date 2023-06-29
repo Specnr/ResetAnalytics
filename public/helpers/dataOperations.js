@@ -6,6 +6,24 @@ const timelines = ["Wood", "Iron Pickaxe", "Nether", "Bastion", "Fortress", "Net
 const hmsToMs = (h, m, s) => h * 60 * 60 * 1000 + m * 60 * 1000 + s * 1000
 const timeToMs = time => time.length > 0 ? hmsToMs(...time.split(":")) : 0
 const isNewSession = (prev, curr, breakTime) => prev - curr - breakTime > (1000 * 60 * 60)
+const isPncakeTracker = item => "Session Marker" in item
+
+const processLinePlotData = (data, step) => {
+  if (data.length === 0) {
+    return []
+  }
+  const distData = []
+  const sortedData = [...data].sort((a, b) => a - b);
+  const start = 30000
+  const end = sortedData[Math.trunc(sortedData.length * 0.98)]
+  const dataRange = Array.from(Array(Math.ceil((end - start) / step)).keys(), (i) => start + i * step)
+  dataRange.forEach((num, idx) => {
+    const index = sortedData.findIndex((element) => element >= num)
+    const count1 = index !== -1 ? index : sortedData.length
+    distData.push({time: num, count: count1})
+  })
+  return distData
+}
 
 // Blinds per hour (preBlindCount / (preBlindRTA / 1000 / 60 / 60))
 const bph = item => {
@@ -14,19 +32,33 @@ const bph = item => {
   return [preBlindRTA, preBlindCount]
 }
 
-// Nethers per hour (netherCount / (owRTA / 1000 / 60 / 60))
-const nph = item => {
+// Total playtime
+const tp = item => {
+  return timeToMs(item["RTA Since Prev"]) + timeToMs(item["RTA"])
+}
+
+// Time spent in overworld
+const owTime = item => {
   return timeToMs(item["Nether"].length > 0 ? item["Nether"] : item["RTA"]) + timeToMs(item["RTA Since Prev"])
+}
+
+// Time spent on wall
+const wallTime = item => {
+  if (isPncakeTracker(item)) {
+    return timeToMs(item["Wall Time Since Prev"])
+  } else {
+    return null
+  }
+}
+
+// Time spent in nether
+const netherTime = item => {
+  return tp(item) - owTime(item)
 }
 
 // Seeds played
 const sp = item => {
-  return parseInt(item["Played Since Prev"])
-}
-
-// Total playtime
-const tp = item => {
-  return timeToMs(item["RTA Since Prev"]) + timeToMs(item["RTA"])
+  return parseInt(item["Played Since Prev"]) + 1
 }
 
 // Reset count
@@ -59,11 +91,50 @@ const bt = (item, types) => {
   }
 }
 
+// Iron Type nether enter analysis
+const it = (item, types) => {
+  if (item["Nether"]) {
+    for (let type in types) {
+      if (item["Iron Source"] === type) {
+        types[type].total += 1
+        types[type].sum += timeToMs(item["Nether"])
+        return
+      }
+    }
+    types["other"].total += 1
+    types["other"].sum += timeToMs(item["Nether"])
+  }
+}
+
+const ei = (item, types) => {
+  if (item["Nether"]) {
+    for (let ironType in types) {
+      if (item["Iron Source"] === ironType) {
+        for (let enterType in types[ironType]) {
+          if (item["Enter Type"] === enterType) {
+            types[ironType][enterType].total += 1
+            types[ironType][enterType].sum += timeToMs(item["Nether"])
+            return
+          }
+        }
+      }
+    }
+    for (let enterType in types["other"]) {
+      if (item["Enter Type"] === enterType) {
+        types["other"][enterType].total += 1
+        types["other"][enterType].sum += timeToMs(item["Nether"])
+        return
+      }
+    }
+  }
+}
+
 // Does all operations
 export const doAllOps = (data, keepSessions=[]) => {
   const currTimeline = {}
   // Initalize 
-  let [enterTypes, resetCount, timePlayed, seedsPlayed, owRTA, preBlindRTA, preBlindCount] = [{}, 0, 0, 0, 0, 0, 0]
+  let [enterTypes, enterDist, resetCount, timePlayed, seedsPlayed, owRTA, preBlindRTA, preBlindCount] = [{}, [], 0, 0, 0, 0, 0, 0]
+  
   let biomeTypes = {
     "beach": {total: 0, sum: 0},
     "forest": {total: 0, sum: 0},
@@ -71,6 +142,36 @@ export const doAllOps = (data, keepSessions=[]) => {
     "other": {total: 0, sum: 0}
   }
 
+  let ironTypes = {
+    "Buried Treasure w/ tnt": {total: 0, sum: 0},
+    "Buried Treasure": {total: 0, sum: 0},
+    "Full Shipwreck": {total: 0, sum: 0},
+    "Half Shipwreck": {total: 0, sum: 0},
+    "Village": {total: 0, sum: 0},
+    "other": {total: 0, sum: 0},
+  }
+
+  let enterInfo = {
+    "Buried Treasure w/ tnt": null,
+    "Buried Treasure": null,
+    "Full Shipwreck": null,
+    "Half Shipwreck": null,
+    "Village": null,
+    "other": null,
+  }
+
+  for (let ironType in enterInfo) {
+    enterInfo[ironType] = {
+      "Magma Ravine": {total: 0, sum: 0},
+      "Lava Pool": {total: 0, sum: 0},
+      "Bucketless": {total: 0, sum: 0},
+      "Obsidian": {total: 0, sum: 0}
+    }
+  }
+
+  
+  let [wallRTA, netherRTA] = [0, 0]
+  
   let prevTime = null
   let currSess = 0
   data.forEach((item, idx) => {
@@ -89,6 +190,12 @@ export const doAllOps = (data, keepSessions=[]) => {
       if (item[tItem].length > 0) {
         if (!currTimeline.hasOwnProperty(tItem))
           currTimeline[tItem] = {total: 0, sum: 0, relativeTotal: 0, relativeSum: 0}
+        // Nether Dist Stuff
+        if (tItem === "Nether") {
+          if (timeToMs(item["Nether"]) > 0) {
+            enterDist.push(timeToMs(item["Nether"]))
+          }
+        }
         // Do structure 1, structure 2
         if (tItem === "Bastion") {
           if (!currTimeline.hasOwnProperty("Bastion"))
@@ -134,13 +241,19 @@ export const doAllOps = (data, keepSessions=[]) => {
     // Data operations
     et(item, enterTypes)
     bt(item, biomeTypes)
+    it(item, ironTypes)
+    ei(item, enterInfo)
     resetCount += rc(item)
     timePlayed += tp(item)
     seedsPlayed += sp(item)
-    owRTA += nph(item)
+    owRTA += owTime(item)
+    netherRTA += netherTime(item)
     const bphData = bph(item)
     preBlindRTA += bphData[0]
     preBlindCount += bphData[1]
+    if (isPncakeTracker(data[0])) {
+      wallRTA += wallTime(item)
+    }
   })
 
   // Average out all the data
@@ -157,6 +270,9 @@ export const doAllOps = (data, keepSessions=[]) => {
   })
 
   const ops = {
+    ot: owRTA,
+    nt: netherRTA,
+    nd: processLinePlotData(enterDist, 2000),
     tl: finalTimeline,
     rc: resetCount,
     pc: seedsPlayed,
@@ -164,9 +280,20 @@ export const doAllOps = (data, keepSessions=[]) => {
     nph: (currTimeline["Nether"] ? currTimeline["Nether"].total : 0) / (owRTA / 1000 / 60 / 60),
     bph: preBlindCount / (preBlindRTA / 1000 / 60 / 60),
     et: enterTypes,
-    bt: biomeTypes
+    bt: biomeTypes,
+    it: ironTypes,
+    ei: enterInfo
   }
-  return ops
+
+  if (isPncakeTracker(data[0])) {
+    const ops1 = {
+      wt: wallRTA,
+      rnph: (currTimeline["Nether"] ? currTimeline["Nether"].total : 0) / ((owRTA + wallRTA) / 1000 / 60 / 60),
+    }
+    return { ...ops, ...ops1}
+  } else {
+    return ops
+  }
 }
 
 // Session stats based off if time difference > like 1hr
@@ -181,7 +308,7 @@ export const splitIntoSessions = data => {
       let currTime = (new Date(item["Date and Time"])).getTime()
       // If there was more than 1hr of gap, start a new session
 
-      if (idx > 0 && isNewSession(prevTime, currTime, timeToMs(data[idx - 1]["Break RTA Since Prev"])))
+      if (idx > 0 && ((!isPncakeTracker(data[idx - 1]) && isNewSession(prevTime, currTime, timeToMs(data[idx - 1]["Break RTA Since Prev"]))) || (isPncakeTracker(data[idx - 1]) && data[idx - 1]["Session Marker"].includes("$"))))
         sessions.push({time: prevTime, entries: [item]})
       else
         sessions[sessions.length - 1].entries.push(item)
