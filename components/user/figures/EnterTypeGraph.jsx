@@ -52,7 +52,7 @@ const EnterTypeGraphs = ({ data }) => {
         <Col style={{ height: "300px" }} className="d-flex flex-column col-md-6 col-sm-12">
           <h1>Enter Type Percentage</h1>
           <ResponsiveContainer>
-            <PieChart width={300} height={250} className="mx-auto">
+            <PieChart className="mx-auto">
               <Pie
                 dataKey="percOfTotal"
                 isAnimationActive={true}

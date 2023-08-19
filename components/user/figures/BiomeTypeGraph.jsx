@@ -35,7 +35,7 @@ const BiomeTypeGraphs = ({ data }) => {
     <>
       <Row style={{ width: "100%" }}>
         <Col style={{ height: "300px" }} className="d-flex flex-column col-md-6 col-sm-12">
-          <h1>Biome Average</h1>
+          <h1>Biome Enter Avg</h1>
           <ResponsiveContainer>
             <BarChart data={biomeBarChartData} margin={{ top: 5, right: 5, bottom: 35, left: 5 }}>
               <XAxis dataKey="name" tick={<CustomTick />} stroke="#b2b2b2" interval={0} />
@@ -52,7 +52,7 @@ const BiomeTypeGraphs = ({ data }) => {
         <Col style={{ height: "300px" }} className="d-flex flex-column col-md-6 col-sm-12">
           <h1>Biome Percentage</h1>
           <ResponsiveContainer>
-            <PieChart width={300} height={250} className="mx-auto">
+            <PieChart className="mx-auto">
               <Pie
                 dataKey="percOfTotal"
                 isAnimationActive={true}

@@ -70,7 +70,7 @@ const SessionStats = ({ data, sheet }) => {
           </Button>
         </Col>
       </Row>
-      {sessData && <Stats data={sessData} isSess />}
+      {sessData && <Stats data={sessData} />}
     </>
   )
 }

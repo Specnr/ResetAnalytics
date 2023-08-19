@@ -1,30 +1,42 @@
 import { Table } from "react-bootstrap"
 import { msToStr, roundToPerc } from "../../../public/helpers/frontendConverters"
+import { GeneralExtraStatsTooltips } from "../../Tooltips"
 
-const GeneralExtraStats = ({ data, isSess }) => {
+const GeneralExtraStats = ({ data }) => {
+  const names = [
+    "RNPH",
+    "FNPH",
+    "Blinds/Hr",
+    "Resets",
+    "Playtime",
+    "Time Per Played",
+    "Resets Per Enter",
+    "Seeds Played"
+  ]
   return (
     <>
-      <h1 className="display-2">Additional Analytics</h1>
+      <GeneralExtraStatsTooltips />
       <Table className="mb-4" style={{ fontSize: "1.35em" }} responsive bordered hover variant="light">
         <thead>
           <tr>
-            <th>Nethers/Hr</th>
-            <th>Blinds/Hr</th>
-            <th>Resets</th>
-            <th>Playtime</th>
-            <th>Time Per Played</th>
-            <th>Resets Per Enter</th>
-            <th>Seeds Played</th>
+            {
+              names.map((name, idx) => (
+                <th key={idx} data-tip data-for={name}>
+                  {name}
+                </th>
+              ))
+            }
           </tr>
         </thead>
         <tbody style={{ fontFamily: "Roboto", fontSize: "1em" }}>
           <tr>
-            <td>{roundToPerc(data.nph)}</td>
+            <td>{roundToPerc(data.rnph)}</td>
+            <td>{roundToPerc(data.fnph)}</td>
             <td>{roundToPerc(data.bph)}</td>
             <td>{data.rc}</td>
             <td>{msToStr(data.tp)}</td>
-            <td>{msToStr(data.tp / data.pc, true)}</td>
-            <td>{roundToPerc(data.rc / data.tl[2].total)}</td>
+            <td>{msToStr(data.tp / data.pc)}</td>
+            <td>{roundToPerc(data.rc / data.tl[3].total)}</td>
             <td>{roundToPerc(roundToPerc(data.pc / data.rc, 4) * 100)}%</td>
           </tr>
         </tbody>

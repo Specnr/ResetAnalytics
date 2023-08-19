@@ -19,7 +19,7 @@ const TwoWayEnterTable = ({ data }) => {
                 <td style={{ borderRight: '2px solid #000', fontWeight: 'bold' }}>{key1}</td>
                 {
                   Object.keys(data.ei[key1]).map((key2, idx2) => (
-                    <td style={{ fontFamily: "Roboto", fontSize: "1em", backgroundColor: `rgb(${127 + Math.round(data.ei[key1][key2].total / data.tl[2].total * 127)}, ${127 - Math.round(data.ei[key1][key2].total / data.tl[2].total * 127)}, ${127 - Math.round(data.ei[key1][key2].total / data.tl[2].total * 127)})` }} key={idx2}>{data.ei[key1][key2].total}</td>
+                    <td style={{ fontFamily: "Roboto", fontSize: "1em", backgroundColor: `rgb(${127 + Math.round(data.ei[key1][key2].total / data.tl[3].total * 127)}, ${127 - Math.round(data.ei[key1][key2].total / data.tl[3].total * 127)}, ${127 - Math.round(data.ei[key1][key2].total / data.tl[3].total * 127)})` }} key={idx2}>{data.ei[key1][key2].total}</td>
                   ))
                 }
               </tr>

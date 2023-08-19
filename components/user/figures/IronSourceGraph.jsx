@@ -34,11 +34,11 @@ const IronSourceGraphs = ({ data }) => {
   return (
     <>
       <Row style={{ width: "100%" }}>
-        <Col style={{ height: "350px" }} className="d-flex flex-column col-md-6 col-sm-12">
-          <h1>Iron Source Average</h1>
+        <Col style={{ height: "300px" }} className="d-flex flex-column col-md-6 col-sm-12">
+          <h1>Iron Source Enter Avg</h1>
           <ResponsiveContainer>
             <BarChart data={ironBarChartData} margin={{ top: 5, right: 5, bottom: 35, left: 5 }}>
-              <XAxis dataKey="name" tick={<CustomTick />} stroke="#b2b2b2"  interval={0} />
+              <XAxis dataKey="name" tick={<CustomTick />} stroke="#b2b2b2" interval={0} />
               <YAxis tickFormatter={tick => msToStr(tick)} stroke="#b2b2b2" />
               <Tooltip separator="" formatter={value => [msToStr(value), ""]} cursor={false} itemStyle={{ color: "#000000" }} labelStyle={{ color: "#000000" }} />
               <Bar dataKey="avg" fill="#ffffff">
@@ -52,7 +52,7 @@ const IronSourceGraphs = ({ data }) => {
         <Col style={{ height: "300px" }} className="d-flex flex-column col-md-6 col-sm-12">
           <h1>Iron Source Percentage</h1>
           <ResponsiveContainer>
-            <PieChart width={300} height={250} className="mx-auto">
+            <PieChart className="mx-auto">
               <Pie
                 dataKey="percOfTotal"
                 isAnimationActive={true}
