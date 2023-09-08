@@ -45,7 +45,8 @@ const processLinePlotData = (data) => {
   })
   const yStep = (distData[distData.length - 1].count > 3 ? logRound(distData[distData.length - 1].count / 3) : 1)
   const yTicks = Array.from(Array(4), (_, i) => i * yStep)
-  return { dist: distData, yTicks: yTicks }
+  const total = data.length
+  return { dist: distData, yTicks: yTicks, total: total }
 }
 
 // Blinds per hour (preBlindCount / (preBlindRTA / 1000 / 60 / 60))

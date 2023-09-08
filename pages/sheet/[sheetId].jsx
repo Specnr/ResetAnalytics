@@ -11,22 +11,24 @@ const UserView = () => {
   const { data, error } = useSWR(sheetId ? `/api/sheet/${sheetId}` : null, fetcher);
 
   if (error) return "An error has occurred."
-  if (!data) return <Spinner animation="border" style={{minHeight: "2em", minWidth: "2em", fontSize: "2em"}} />
+  if (!data) return (
+    <div style={{ minHeight: "90vh", display: "flex" }}>
+      <Spinner animation="border" style={{ minHeight: "2em", minWidth: "2em", fontSize: "2em", alignSelf: "center" }} />
+    </div>
+  )
   if (!data.success) return <h1>Invalid sheet :(</h1>
   return (
-    <Tabs transition={false}>
-      <Tab eventKey="lifetime" title="Lifetime">
-        <h1 className="display-2">Lifetime Stats</h1>
-        <Stats data={data.overall} />
-      </Tab>
-      <Tab eventKey="latest" title="Latest">
-        <h1 className="display-2">Latest Session</h1>
-        <Stats data={data.session[0].ops} />
-      </Tab>
-      <Tab eventKey="sessions" title="Sessions">
-        <SessionStats data={data} sheet={sheetId} />
-      </Tab>
-    </Tabs>
+    <div style={{ paddingTop: "25px" }}>
+      <Tabs transition={false} variant="pills">
+        <Tab eventKey="lifetime" title="Lifetime">
+          <h1 className="display-2">Lifetime Stats</h1>
+          <Stats data={data.overall} />
+        </Tab>
+        <Tab eventKey="sessions" title="Sessions">
+          <SessionStats data={data} sheet={sheetId} />
+        </Tab>
+      </Tabs>
+    </div>
   )
 }
 

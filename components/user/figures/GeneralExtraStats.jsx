@@ -3,16 +3,16 @@ import { msToStr, roundToPerc } from "../../../public/helpers/frontendConverters
 import { GeneralExtraStatsTooltips } from "../../Tooltips"
 
 const GeneralExtraStats = ({ data }) => {
-  const names = [
-    "RNPH",
-    "FNPH",
+  const names = (data.pn ? ["RNPH"] : []).concat([
+    "LNPH",
     "Blinds/Hr",
     "Resets",
     "Playtime",
     "Time Per Played",
     "Resets Per Enter",
     "Seeds Played"
-  ]
+  ])
+
   return (
     <>
       <GeneralExtraStatsTooltips />
@@ -30,7 +30,11 @@ const GeneralExtraStats = ({ data }) => {
         </thead>
         <tbody style={{ fontFamily: "Roboto", fontSize: "1em" }}>
           <tr>
-            <td>{roundToPerc(data.rnph)}</td>
+            {
+              !data.pn ? null : (
+                <td>{roundToPerc(data.rnph)}</td>
+              )
+            }
             <td>{roundToPerc(data.fnph)}</td>
             <td>{roundToPerc(data.bph)}</td>
             <td>{data.rc}</td>

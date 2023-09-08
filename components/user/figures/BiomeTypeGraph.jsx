@@ -33,8 +33,8 @@ const BiomeTypeGraphs = ({ data }) => {
 
   return (
     <>
-      <Row style={{ width: "100%" }}>
-        <Col style={{ height: "300px" }} className="d-flex flex-column col-md-6 col-sm-12">
+      <Row style={{ width: "100%", margin: "0px" }}>
+        <Col style={{ height: "300px", padding: "0px" }} className="d-flex flex-column col-md-6 col-sm-12">
           <h1>Biome Enter Avg</h1>
           <ResponsiveContainer>
             <BarChart data={biomeBarChartData} margin={{ top: 5, right: 5, bottom: 35, left: 5 }}>
@@ -49,7 +49,7 @@ const BiomeTypeGraphs = ({ data }) => {
             </BarChart>
           </ResponsiveContainer>
         </Col>
-        <Col style={{ height: "300px" }} className="d-flex flex-column col-md-6 col-sm-12">
+        <Col style={{ height: "300px", padding: "0px" }} className="d-flex flex-column col-md-6 col-sm-12">
           <h1>Biome Percentage</h1>
           <ResponsiveContainer>
             <PieChart className="mx-auto">

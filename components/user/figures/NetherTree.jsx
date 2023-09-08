@@ -32,21 +32,29 @@ const NetherTree = ({ netherTreeData }) => {
 
 
     return (
-        <ResponsiveContainer>
-            <Treemap
-                style={{ fontFamily: "Roboto" }}
-                data={netherTreeData}
-                nameKey="name"
-                dataKey="value"
-                ratio={4 / 3}
-                isAnimationActive={false}
-                stroke="#fff"
-                fill={'#8889DD'}
-                content={props => renderContent({ ...props, colors })}
-            >
-                <Tooltip />
-            </Treemap>
-        </ResponsiveContainer>
+        <>
+            <h1>Nether Treemap</h1>
+            <h3>
+                {Object.keys(colors).slice(0, 3).map((item, index) => (
+                    <span key={index} style={{color: colourList[index], margin: "10px"}}>{item}</span>
+                ))}
+            </h3>
+            <ResponsiveContainer>
+                <Treemap
+                    style={{ fontFamily: "Roboto" }}
+                    data={netherTreeData}
+                    nameKey="name"
+                    dataKey="value"
+                    ratio={4 / 3}
+                    isAnimationActive={false}
+                    stroke="#fff"
+                    fill={'#8889DD'}
+                    content={props => renderContent({ ...props, colors })}
+                >
+                    <Tooltip />
+                </Treemap>
+            </ResponsiveContainer>
+        </>
     )
 }
 

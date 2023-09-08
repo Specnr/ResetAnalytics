@@ -4,6 +4,7 @@ const TwoWayEnterTable = ({ data }) => {
 
   return (
     <>
+      <h1>Two-way Table</h1>
       <Table className="mb-4" style={{ fontSize: "1.35em" }} responsive bordered hover variant="light">
         <tbody>
           <tr style={{ borderBottom: '2px solid #000', fontWeight: 'bold' }}>

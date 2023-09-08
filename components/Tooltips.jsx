@@ -10,7 +10,7 @@ export const SplitInfoTooltips = () => (
 export const GeneralExtraStatsTooltips = () => (
   <>
     <ReactTooltip id="RNPH">real nethers per hour; yes wall time; no nether time</ReactTooltip>
-    <ReactTooltip id="FNPH">fake nethers per hour; no wall time; no nether time</ReactTooltip>
+    <ReactTooltip id="LNPH">legacy nethers per hour; no wall time; no nether time</ReactTooltip>
     <ReactTooltip id="Blinds/Hr">blinds per hour, excluding time spent post-blind</ReactTooltip>
     <ReactTooltip id="Resets">total reset count</ReactTooltip>
     <ReactTooltip id="Playtime">amount of playtime; does not count wall time</ReactTooltip>
