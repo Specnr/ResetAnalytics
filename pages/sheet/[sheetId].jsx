@@ -24,6 +24,10 @@ const UserView = () => {
           <h1 className="display-2">Lifetime Stats</h1>
           <Stats data={data.overall} />
         </Tab>
+        <Tab eventKey="latest" title="Latest">
+            <h1 className="display-2">Latest Session</h1>
+            <Stats data={data.session[0].ops} />
+        </Tab>
         <Tab eventKey="sessions" title="Sessions">
           <SessionStats data={data} sheet={sheetId} />
         </Tab>
