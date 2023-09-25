@@ -20,20 +20,20 @@ export default class MainDocument extends Document {
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
           <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
-          <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=VT323&display=swap" rel="stylesheet" /> 
+          <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=VT323&display=swap" rel="stylesheet" />
         </Head>
-        <body>
-          <Layout style={{"fontFamily": "VT323"}}>
-            <div className="jumbotron d-flex align-items-center" style={{minHeight: "100vh"}}>
-              <Container>
-                <div style={{minHeight: "95vh"}} className="d-flex align-items-center justify-content-center">
+        <body style={{overflowY: "scroll"}}>
+          <Layout style={{ "fontFamily": "VT323" }}>
+            <div className="jumbotron d-flex flex-column justify-content-between" style={{ minHeight: "100vh" }}>
+              <Container className="flex-grow-1">
+                <div className="d-flex justify-content-center">
                   <div className="overflow-hidden">
                     <Main />
                     <NextScript />
                   </div>
                 </div>
-                <Footer />
               </Container>
+              <Footer />
             </div>
           </Layout>
         </body>
