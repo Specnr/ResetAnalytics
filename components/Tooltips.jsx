@@ -4,6 +4,9 @@ export const SplitInfoTooltips = () => (
   <>
     <ReactTooltip id="cumulative">Cumulative/Standard</ReactTooltip>
     <ReactTooltip id="relative">Relative to previous split</ReactTooltip>
+    <ReactTooltip id="xph">splits per hour</ReactTooltip>
+    <ReactTooltip id="rpx">resets per split</ReactTooltip>
+    <ReactTooltip id="sppx">seeds played per split</ReactTooltip>
   </>
 )
 

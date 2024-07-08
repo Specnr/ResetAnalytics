@@ -338,13 +338,15 @@ export const doAllOps = (data, keepSessions = []) => {
   let prevCount = resetCount
   timelines.forEach(tItem => {
     if (!currTimeline.hasOwnProperty(tItem))
-      finalTimeline.push({ time: 0, total: 0, tsp: 0, XPH: 0, cStdev: 0, rStdev: 0, cDist: [], rDist: [], cConv: 0, rConv: 0 })
+      finalTimeline.push({ time: 0, total: 0, tsp: 0, xph: 0, rpx: 0, sppx: 0, cStdev: 0, rStdev: 0, cDist: [], rDist: [], cConv: 0, rConv: 0 })
     else
       finalTimeline.push({
         time: Math.round(mean(currTimeline[tItem].cDist)),
         total: currTimeline[tItem].cDist.length,
         tsp: Math.round(mean(currTimeline[tItem].rDist)),
         xph: (currTimeline[tItem] ? currTimeline[tItem].cDist.length / (currTimeline[tItem].preSplitRTA / 1000 / 60 / 60) : 0),
+        rpx: Math.round(resetCount / currTimeline[tItem].cDist.length),
+        sppx: seedsPlayed / currTimeline[tItem].cDist.length,
         cStdev: Math.round(stdev(currTimeline[tItem].cDist)),
         rStdev: Math.round(stdev(currTimeline[tItem].rDist)),
         cDist: processLinePlotData(currTimeline[tItem].cDist),
