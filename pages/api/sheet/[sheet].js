@@ -1,7 +1,7 @@
 import { splitIntoSessions, doAllOps } from "../../../public/helpers/dataOperations"
 
 const reader = require("g-sheets-api");
-
+export const maxDuration = 60;
 
 export default function handler(req, res) {
   let keepSessions = new Set()
